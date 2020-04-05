@@ -11,7 +11,7 @@ maType = MaTypes.RalphStyle # the default desired moving average type
 
 #gets the users desired moving average type
 def getMaType():
-    ans = raw_input("What type of moving average? (r for RalphStyle, n for NormalStyle)  ")
+    ans = input("What type of moving average? (r for RalphStyle, n for NormalStyle)  ")
     mtype = MaTypes.RalphStyle
     
     if ans == 'r':
@@ -19,23 +19,23 @@ def getMaType():
     elif ans == 'n':
         mtype = MaTypes.NormalStyle
     else:
-        print "BAD INPUT! Try Again"
+        print ("BAD INPUT! Try Again")
         return getMaType()
-    print "\n"
+    print ("\n")
     
     return mtype
 
 #asks the user how many number systems they want
 def getSystems():
     systems = []
-    cols = raw_input("How many systems/columns do you want? \n")
+    cols = input("How many systems/columns do you want? \n")
     try:
         cols = int(cols)
     except:
-        print "BAD INPUT!"
+        print ("BAD INPUT!")
         return getSystems()
 
-    print "\n"
+    print ("\n")
     for i in range(int(cols)):
         systems.append(getSysNumbers(i))
 
@@ -45,52 +45,52 @@ def getSystems():
 def getSysNumbers(sys):
     system = []
     val = 0
-    while val is not 'q':
-        val = raw_input("Enter numbers for system "+str(chr(sys+65)).lower()+"? (q to finish) ") #65 is ascii A
-        if val is not 'q':
+    while val != 'q':
+        val = input("Enter numbers for system "+str(chr(sys+65)).lower()+"? (q to finish) ") #65 is ascii A
+        if val != 'q':
             try:
                 system.append(int(val))
             except:
-                print "BAD INPUT!"
-    print "\n" 
+                print ("BAD INPUT!")
+    print ("\n" )
     return system
 
 #gets the indexes for which to run a versus system on
 def getVsIndexes():
-    input = raw_input("What columns do you want to play against each other? Example: xy \n")
-    input = input.upper()
-    parts = input.split(" ")
+    in1 = input("What columns do you want to play against each other? Example: xy \n")
+    in1 = in1.upper()
+    parts = in1.split(" ")
     if len(parts) == 1:
-        teamA = ord(input[0])-65
-        teamB = ord(input[1])-65
+        teamA = ord(in1[0])-65
+        teamB = ord(in1[1])-65
     elif len(parts) == 2:
         teamA = ord(parts[0])-65 #65 is ascii A
         teamB = ord(parts[1])-65 #65 is ascii A
     elif len(parts) != 2:
-        print "BAD INPUT!\n"
+        print ("BAD INPUT!\n")
         return getVsIndexes()
     return [teamA, teamB]
 
 #gets the indexes to run a confirmation/agreement system on
 def getConfirmationIndexes():
-    input = raw_input("What columns do you want to confirm each other? Example: xy \n")
-    input = input.upper()
-    parts = input.split(" ")
+    in1 = input("What columns do you want to confirm each other? Example: xy \n")
+    in1 = in1.upper()
+    parts = in1.split(" ")
     if len(parts) == 1:
-        teamA = ord(input[0])-65
-        teamB = ord(input[1])-65
+        teamA = ord(in1[0])-65
+        teamB = ord(in1[1])-65
     elif len(parts) == 2:
         teamA = ord(parts[0])-65 #65 is ascii A
         teamB = ord(parts[1])-65 #65 is ascii A
     elif len(parts) != 2:
-        print "BAD INPUT!\n"
+        print ("BAD INPUT!\n")
         return getConfirmationIndexes()
     return [teamA, teamB]
 
 #gets an array of data from a particular file
 def getData(filename = None):
     if filename is None:
-        filename = raw_input("what data file do you want to use? \n")
+        filename = input("what data file do you want to use? \n")
     filename = filename.upper()
     filename += ".DAT"
     file_handle = open("C:/DOS_Program_Files/fib/"+filename, 'r')
@@ -98,7 +98,7 @@ def getData(filename = None):
     data = []
     for line in lines_list:
         data.append(int(line))
-    print "\n"
+    print ("\n")
     return data
 
 #returns a collection of columns for each system
@@ -135,24 +135,17 @@ def calcNumColRalphsMA(num, data):
         backsum += data[i]        #index 0 to 9 if num is 20
         frontsum += data[i+part]  #index 10 to 19 if num is 20
 
-    #print "frontsum expecting 155: "+str(frontsum)
-    #print "backsum expecting 55: "+str(backsum)
-    #print "frontsum: "+str(frontsum)+", backsum: "+str(backsum)
     col[num - 1] = frontsum - backsum 
         
     #done using memoization:
     for i in range(num, len(data)):        #index 20 to 800
         backnum = data[i-num]              #remove index 0 
-        #print "removing "+str(backnum)+" from backsum"
         backsum -= backnum
         transferNum = data[i - part]       #20 - 10 = index 10
         backsum += transferNum             #add index 10
-        #print "adding "+str(transferNum)+" to backsum, removing from frontsum"
         frontsum -=transferNum             #remove index 10
         frontnum = data[i]
         frontsum += frontnum             #add index 20 
-        #print "adding "+str(frontnum) +" to frontsum"
-        #print "frontsum: "+str(frontsum)+", backsum: "+str(backsum)
         col[i] = frontsum - backsum
     return col   
 
@@ -180,7 +173,7 @@ def calculateNumColNormalMA(num, data):
 #prints a column
 def printCol(col):
     for i in range(len(col)):
-        print "inc "+str(i+1)+": "+str(col[i])
+        print ("inc "+str(i+1)+": "+str(col[i]))
 
 def printCols(data, cols, startInc = None):
     datastring = ""
@@ -188,19 +181,18 @@ def printCols(data, cols, startInc = None):
         for i in range(len(cols[0])):
             for j in range(len(cols)):
                 datastring += "{0:10d}".format(cols[j][i])
-            print "inc"+str(i+1)+", price="+str(data[i]).ljust(10)+datastring
+            print ("inc"+str(i+1)+", price="+str(data[i]).ljust(10)+datastring)
             datastring = ""
     else:
         for i in range(startInc-1,startInc-1+48):
             if i < len(cols[0]):
                 for j in range(len(cols)):
                     datastring += "{0:10d}".format(cols[j][i])
-                print "inc"+str(i+1)+", price="+str(data[i]).ljust(10)+datastring
+                print ("inc"+str(i+1)+", price="+str(data[i]).ljust(10)+datastring)
                 datastring = ""
 
 #given the system columns and teamA,teamB of vsIndexes, calculates a vs column
 def calcVsCol(syscols, vsIndexes):
-    #print "creating versus column for indexes "+str(vsIndexes[0])+" and "+str(vsIndexes[1])
     col = [0] * len(syscols[0])
     index1 = vsIndexes[0]
     index2 = vsIndexes[1]
@@ -210,7 +202,6 @@ def calcVsCol(syscols, vsIndexes):
     return col
 
 def calcConfCol(syscols, confIndexes):
-    #print "calculating confirmation system on indexes: "+str(confIndexes[0])+" and "+str(confIndexes[1])
     col = [0] * len(syscols[0])
     for i in range(len(syscols[0])):
         if syscols[confIndexes[0]][i] < 0 and syscols[confIndexes[1]][i] < 0:
@@ -234,26 +225,26 @@ stat = {
 }    
     
 def printStats(stats):
-    print "\n"
+    print ("\n")
     banner = str("GRAND TOTAL:").ljust(26)
     for i in range(len(stats)):
         banner += str(stats[i][stat['gt']]).rjust(10)
-    print banner
+    print (banner)
     
     banner = str("TRADE COUNT:").ljust(26)
     for i in range(len(stats)):
         banner += str(stats[i][stat['trades']]).rjust(10)
-    print banner
+    print (banner)
     
     banner = str("WIN COUNT:").ljust(26)
     for i in range(len(stats)):
         banner += str(stats[i][stat['wins']]).rjust(10)
-    print banner
+    print (banner)
     
     banner = str("LOSS COUNT:").ljust(26)
     for i in range(len(stats)):
         banner += str(stats[i][stat['losses']]).rjust(10)
-    print banner
+    print (banner)
     
 #gets a list of stats for every given column
 def getAllStats(data, syscols):
@@ -340,7 +331,6 @@ def getColStats(data, syscols, sysindex):
                 linestring += "flat from short, winloss: "+str(winloss)
             position = positions['flat']
             positionPrice = price
-        #print linestring
         linestring = ""
 
     return [gt, tradeCount, winCount, lossCount]
@@ -358,44 +348,44 @@ def main(data):
     count = 0
     doVersus = 'y'
     versusSystems = []
-    while doVersus is 'y' or doVersus is not 'n':
-        if doVersus is not 'y' and doVersus is not 'n':
-            print "BAD INPUT!"
+    while doVersus == 'y' or doVersus != 'n':
+        if doVersus != 'y' and doVersus != 'n':
+            print ("BAD INPUT!")
         a_another = "another" if count>0 else "a"
-        doVersus = raw_input("Do you want to create "+a_another+" versus column? (y or n) \n") #65 is ascii A
-        if doVersus is 'y':
+        doVersus = input("Do you want to create "+a_another+" versus column? (y or n) \n")
+        if doVersus == 'y':
             indexes = getVsIndexes()            #if they choose ab, returns list of those indices: [0,1]
             versusSystems.append(indexes)
             vscol = calcVsCol(syscols, indexes)
-            print "\'"+str(chr(indexes[0]+65)).lower()+" played against "+str(chr(indexes[1]+65)).lower()+"\' was placed in column "+str(chr(len(syscols)+65)).lower()+"\n\n"
+            print ("\'"+str(chr(indexes[0]+65)).lower()+" played against "+str(chr(indexes[1]+65)).lower()+"\' was placed in column "+str(chr(len(syscols)+65)).lower()+"\n\n")
             syscols.append(vscol)
             count += 1
             
     count = 0
     doConfirmation = 'y'
     confirmationSystems = []
-    while doConfirmation is 'y' or doConfirmation is not 'n':
-        if doConfirmation is not 'y' and doConfirmation is not 'n':
-            print "BAD INPUT!"
+    while doConfirmation == 'y' or doConfirmation != 'n':
+        if doConfirmation != 'y' and doConfirmation != 'n':
+            print ("BAD INPUT!")
         a_another = "another" if count>0 else "a"    
-        doConfirmation = raw_input("\nDo you want to create "+a_another+" confirmation column? (y or n) \n")
-        if doConfirmation is 'y':
+        doConfirmation = input("\nDo you want to create "+a_another+" confirmation column? (y or n) \n")
+        if doConfirmation == 'y':
             indexes = getConfirmationIndexes()      #if they choose ab, returns list of those indices: [0,1]
             confirmationSystems.append(indexes)
             confcol = calcConfCol(syscols, indexes)
-            print "\'"+str(chr(indexes[0]+65)).lower()+" confirming "+str(chr(indexes[1]+65)).lower()+"\' was placed in column "+str(chr(len(syscols)+65)).lower()+"\n\n" #65 is ascii A            
-            syscols.append(confcol)
+            print ("\'"+str(chr(indexes[0]+65)).lower()+" confirming "+str(chr(indexes[1]+65)).lower()+"\' was placed in column "+str(chr(len(syscols)+65)).lower()+"\n\n")
+            syscols.append(confcol)   
             count += 1
             
-    cont = raw_input("\nPress Enter to view columns...\n")
+    input("\nPress Enter to view columns...\n")
     currentLine = len(data)-47
     printCols(data, syscols, currentLine)
     stats = getAllStats(data, syscols)
     printStats(stats)
     
     command = 0
-    while command is not 'q':
-        command = raw_input("commands: 6=page, c=change_data, g=grand_totals, q=quit, r=restart ")
+    while command != 'q':
+        command = input("commands: 6=page, c=change_data, g=grand_totals, q=quit, r=restart ")
         if command == 'q':
             return
         elif command == 'c':
@@ -413,7 +403,7 @@ def main(data):
             stats = getAllStats(data, syscols)
             printStats(stats)
         elif command == '6':
-            currentLine = int(raw_input("What increment do you want to go to? (q to exit) "))
+            currentLine = int(input("What increment do you want to go to? (q to exit) "))
             printCols(data, syscols, currentLine)
         elif command == 'r':
             clearTerminal()
@@ -429,4 +419,4 @@ try:
     main(data)
 except Exception as ex:
     print(ex)
-    raw_input("There was an Error. Press Enter to Exit...")
+    input("There was an Error. Press Enter to Exit...")
